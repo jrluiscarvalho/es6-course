@@ -27,32 +27,30 @@ class NegociacaoController {
 
     importarNegociacoes(){
         let service = new NegociacaoService();
-        service.obterNegociacoesDaSemana((err, negociacoes) => {
-            if(err){
-                this._mensagem.texto = err;
-                return;
-            }
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociacoes importadas com sucesso';
-        });
 
-        service.obterNegociacoesDaSemanaAnterior((err, negociacoes) => {
-            if(err){
-                this._mensagem.texto = err;
-                return;
-            }
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociacoes importadas com sucesso';
-        });
-
-        service.obterNegociacoesDaSemanaRetrasada((err, negociacoes) => {
-            if(err){
-                this._mensagem.texto = err;
-                return;
-            }
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociacoes importadas com sucesso';
-        });
+        let promise = service.obterNegociacoesDaSemana()
+        promise
+            .then( negociacoes => {
+                negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+                this._mensagem.texto = "Negociacao da semana obtida com sucesso";
+            })
+            .catch(erro => this._mensagem.texto = erro);
+        
+        let promise = service.obterNegociacoesDaSemanaAnterior()
+        promise
+            .then( negociacoes => {
+                negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+                this._mensagem.texto = "Negociacao da semana obtida com sucesso";
+            })
+            .catch(erro => this._mensagem.texto = erro);
+        
+        let promise = service.obterNegociacoesDaSemanaRetrasada()
+        promise
+            .then( negociacoes => {
+                negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+                this._mensagem.texto = "Negociacao da semana obtida com sucesso";
+            })
+            .catch(erro => this._mensagem.texto = erro);
     }
 
     _criarNegociacao(){
