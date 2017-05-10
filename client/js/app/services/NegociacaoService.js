@@ -7,7 +7,43 @@ class NegociacaoService{
                 if(xhr.readyState == 4){
                     if(xhr.status == 200){
                         callback(null, JSON.parse(xhr.responseText)
-                        .map( obj => new Negociacao(new Date(obj._inputData), obj._inputQuantidade, obj._inputValor)));
+                        .map( obj => new Negociacao(new Date(obj.data), obj.quantidade, obj.valor)));
+                    }else{
+                        console.log('erro');
+                        callback('Não foi possivel obter as negociacoes', null);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        obterNegociacoesDaSemanaAnterior(callback){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'negociacoes/anterior');
+            
+            xhr.onreadystatechange = () => {
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        callback(null, JSON.parse(xhr.responseText)
+                        .map( obj => new Negociacao(new Date(obj.data), obj.quantidade, obj.valor)));
+                    }else{
+                        console.log('erro');
+                        callback('Não foi possivel obter as negociacoes', null);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        obterNegociacoesDaSemanaRetrasada(callback){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'negociacoes/retrasada');
+            
+            xhr.onreadystatechange = () => {
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        callback(null, JSON.parse(xhr.responseText)
+                        .map( obj => new Negociacao(new Date(obj.data), obj.quantidade, obj.valor)));
                     }else{
                         console.log('erro');
                         callback('Não foi possivel obter as negociacoes', null);
