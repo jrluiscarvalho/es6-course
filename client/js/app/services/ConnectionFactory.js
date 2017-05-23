@@ -1,0 +1,5 @@
+class ConnectionFactory{
+    static getConnection(){
+        
+    }
+}
