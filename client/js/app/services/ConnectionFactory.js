@@ -1,11 +1,13 @@
-var ConnectionFactory = (function (){
+let ConnectionFactory = (function (){
 
 
-    var stores = ['negociacoes', 'clientes'];
-    var version = 4;
-    var dbName = 'aluraframe';
+    const stores = ['negociacoes', 'clientes'];
+    const version = 4;
+    const dbName = 'aluraframe';
 
-    var connection = null;
+    let connection = null;
+
+    let close = null;
 
     return class ConnectionFactory{
         
@@ -26,6 +28,7 @@ var ConnectionFactory = (function (){
                 openRequest.onsuccess = e => {
                     if(!connection) {
                         connection = e.target.result;
+                        close = connection.close.bind(connection);
                         connection.close = function(){
                             throw new Error('Voce nao pode fechar diretamente uma conexao');
                         }
@@ -50,5 +53,13 @@ var ConnectionFactory = (function (){
 
             });
         }
+
+        static closeConnection(){
+            if(connection){
+                close();
+                connection = null;
+            }
+        }
+
     }
 })();
