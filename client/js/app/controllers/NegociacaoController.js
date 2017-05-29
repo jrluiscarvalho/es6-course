@@ -15,14 +15,35 @@ class NegociacaoController {
             new Mensagem(),
             new MensagemView($('#mensagemView')),
             'texto');
+
+        this._ordemAtual = '';
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => {
+                new NegociacaoDao(connection)
+                    .listaTodos()
+                    .then(negociacoes => {
+                        negociacoes.forEach(negociacao => {
+                            this._listaNegociacoes.adiciona(negociacao);
+                        });
+                    });
+            });
         
     }
             
     adiciona(event){
+        
         event.preventDefault();
-        this._listaNegociacoes.adiciona(this._criarNegociacao());
-        this._mensagem.texto = 'Negociação adicionada com sucesso!';
-        this._limpaFormulario();
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new Negociacao(connection))
+            .then(dao => dao.listaTodos())
+            .then(negociacoes => 
+                    negociacoes.forEach(negociacao => 
+                            this._listaNegociacoes(negociacao)))
+            .catch(erro => this._mensagem.texto = erro);
     }
 
     importarNegociacoes(){
@@ -44,8 +65,8 @@ class NegociacaoController {
 
         return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
-            this._inputQuantidade.value,
-            this._inputValor.value
+            parseInt(this._inputQuantidade.value),
+            parseFloat(this._inputValor.value)
         )
     }
 
